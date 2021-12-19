@@ -17,6 +17,8 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("io.github.monun:kommand:2.6.6")
+    compileOnly("io.github.monun:kommand-api:2.6.6")
 
     implementation(kotlin("stdlib"))
 

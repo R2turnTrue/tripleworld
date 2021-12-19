@@ -1,7 +1,9 @@
-name: ${pluginName}
-version: ${version}
-main: ${group}.${packageName}.plugin.${pluginName}Plugin
+name: tripleworld
+version: 1.0.0
+main: xyz.r2turntrue.tripleworld
 api-version: 1.17
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:1.5.21
   - org.jetbrains.kotlin:kotlin-reflect:1.5.21
+  - io.github.monun:kommand-api:2.6.6
+  - io.github.monun:kommand:2.6.6
