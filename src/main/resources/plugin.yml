@@ -1,6 +1,6 @@
 name: tripleworld
 version: 1.0.0
-main: xyz.r2turntrue.tripleworld
+main: xyz.r2turntrue.tripleworld.TripleWorld
 api-version: 1.17
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:1.5.21
