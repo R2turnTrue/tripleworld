@@ -4,7 +4,6 @@ import io.github.monun.kommand.getValue
 import io.github.monun.kommand.kommand
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.WorldCreator
 import org.bukkit.plugin.java.JavaPlugin
@@ -27,6 +26,38 @@ class TripleWorld: JavaPlugin() {
         }
 
         kommand {
+            register("clone") {
+                requires { isOp }
+                then("old" to dimension()) {
+                    then("new" to string()) {
+                        executes { ctx ->
+                            val old: World by ctx
+                            val new: String by ctx
+                            val oldWorldFile = File(server.worldContainer, old.name)
+                            val newWorldFile = File(server.worldContainer, new)
+
+                            if(!oldWorldFile.exists() || newWorldFile.exists()) {
+                                sender.sendMessage(Component.text("이미 월드가 존재하거나 기존 월드가 존재하지 않습니다!", NamedTextColor.RED))
+                                return@executes
+                            }
+
+                            if(!FileUtils.copyFolder(oldWorldFile, newWorldFile, listOf("session.lock", "uid.dat"))) {
+                                sender.sendMessage(Component.text("파일을 복사하는 도중 오류가 발생했습니다!", NamedTextColor.RED))
+                                return@executes
+                            }
+
+                            if(loadWorld(new)) {
+                                sender.sendMessage(Component.text("월드 임포트가 성공적으로 완료되었습니다!", NamedTextColor.GREEN))
+                                worldList.add(new)
+                                config.set("worlds", worldList)
+                                saveConfig()
+                            } else {
+                                sender.sendMessage(Component.text("실패!", NamedTextColor.RED))
+                            }
+                        }
+                    }
+                }
+            }
             register("move") {
                 requires { isPlayer && isOp }
                 then("world" to dimension()) {
@@ -67,14 +98,13 @@ class TripleWorld: JavaPlugin() {
                         }
 
                         if(loadWorld(world)) {
-                            sender.sendMessage(Component.text("월드 임포트가 성공되었습니다!", NamedTextColor.GREEN))
+                            sender.sendMessage(Component.text("월드 복제가 성공적으로 완료되었습니다!", NamedTextColor.GREEN))
+                            worldList.add(world)
+                            config.set("worlds", worldList)
+                            saveConfig()
                         } else {
                             sender.sendMessage(Component.text("실패!", NamedTextColor.RED))
                         }
-
-                        worldList.add(world)
-                        config.set("worlds", worldList)
-                        saveConfig()
                     }
                 }
             }
